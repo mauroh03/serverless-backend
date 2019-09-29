@@ -62,20 +62,16 @@ functions:
           cors: true
           authorizer: aws_iam
           integration: lambda
+  delete:
+    handler: delete.main
+    events:
+      - http:
+          path: notes/{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+          integration: lambda
 
 resources:
-  Resources:
-    notesDynamoTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: notes
-        AttributeDefinitions: 
-          - AttributeName: userId
-            AttributeType: S
-          - AttributeName: noteId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: userId
-            KeyType: HASH
-          - AttributeName: noteId
-            KeyType: RANGE
+  - ${file(resources/dynamodb-tables.yml)}
+  - ${file(resources/api-gateway-errors.yml)}

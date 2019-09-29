@@ -1,5 +1,4 @@
 {
-    "body": "{\"content\":\"serverless test\",\"attachment\":\"serverLess.jpg\"}",
     "pathParameters": {
         "id": "b1fa5680-e1be-11e9-955d-33f4570f7734"
     },
