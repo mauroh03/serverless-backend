@@ -1,4 +1,4 @@
-service: serverless-backend
+service: serverless-backend-salsa
 
 package:
   individually: true
@@ -7,11 +7,19 @@ plugins:
   - serverless-bundle
   - serverless-offline
 
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  tableName: ${self:custom.stage}-notes
+  environment: ${file(env.yml):${self:custom.stage}, file(env.yml):default}
+
 provider:
   name: aws
   runtime: nodejs8.10
   stage: dev
   region: us-east-1
+
+  environment:
+    tableName: ${self:custom.tableName}
 
   iamRoleStatements:
     - Effect: Allow
@@ -23,7 +31,8 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+      Resource:
+        - "Fn::GetAtt": [ NotesDynamoTable, Arn ]
 
 functions:
   create:
@@ -75,3 +84,6 @@ functions:
 resources:
   - ${file(resources/dynamodb-tables.yml)}
   - ${file(resources/api-gateway-errors.yml)}
+  - ${file(resources/s3-buckets.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
