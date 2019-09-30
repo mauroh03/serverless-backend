@@ -32,7 +32,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - "Fn::GetAtt": [ NotesDynamoTable, Arn ]
+        - "Fn::GetAtt": [NotesDynamoTable, Arn]
 
 functions:
   create:
@@ -80,6 +80,14 @@ functions:
           cors: true
           authorizer: aws_iam
           integration: lambda
+  billing:
+    handler: billing.main
+    events:
+      - http:
+          path: billing
+          method: post
+          cors: true
+          authorizer: aws_iam
 
 resources:
   - ${file(resources/dynamodb-tables.yml)}
